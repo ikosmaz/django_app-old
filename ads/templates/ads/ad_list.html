@@ -23,6 +23,7 @@ input[type=text]:focus {border-color:#009a90; outline:none;}
 .fa-close {font-size:2rem;margin-left:5px;color:#009a90;}
 .fa-close:hover {font-size:2.2rem;margin-left:5px;color:#006d66;}
 .fa-heart, .fa-heart-o {margin-top:-3px;}
+.search button[type="submit"] {border:none; background:transparent; padding:0 6px; box-shadow:none;}
 .ads-list {list-style:none; padding-left:0; margin:0;}
 .adlist {margin:0 0 8px 0; padding:10px; border:1px solid #d9d9d9; border-radius:5px; background-color:#ffffff; box-shadow:0 2px 5px rgba(0,0,0,0.08);}
 .ad-row {display:grid; grid-template-columns:55px 1fr; gap:12px; align-items:start;}
@@ -145,7 +146,7 @@ input[type=text]:focus {border-color:#009a90; outline:none;}
   {% endfor %}
 </ul>
 {% else %}
-  <p>There are no ads in the database.</p>
+  <p><i class="fa fa-circle-o fa-lg" aria-hidden="true"></i>  No ads found for your search term. Try using different keywords.</p>
 {% endif %}
 </p>
 
@@ -171,6 +172,7 @@ input[type=text]:focus {border-color:#009a90; outline:none;}
     <li>use emojis on ad title, comments and messages</li>
     <li>like ads and comments</li>
     <li>edit/delete own ads and delete own comments</li>
+    <li>send a reset password link</li>
   </ul>
   <p>Github account can be used to login (social login)</p>
   <p>Up to 3MB photos can be added to ads</p>
