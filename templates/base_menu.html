@@ -1,0 +1,89 @@
+{% extends "base_bootstrap.html" %}
+{% block navbar %}
+{% load app_tags %}
+<style>
+.menu-read-icon {color: #009a90; margin-right: 6px;}
+.menu-user-welcome {color: #777777; padding-left: 10px; display: inline-block;}
+</style>
+<nav class="navbar navbar-default app-navbar navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">{{ settings.APP_NAME }}</a>
+    </div>
+    <!-- https://stackoverflow.com/questions/22047251/django-dynamically-get-view-url-and-check-if-its-the-current-page -->
+    <div class="collapse navbar-collapse" id="myNavbar">
+<!--    <ul class="nav navbar-nav">
+      {% url 'ads' as ads %}
+      <li {% if request.get_full_path == ads %}class="active"{% endif %}>
+          <a href="{% url 'ads:all' %}">Ads</a></li>
+    </ul>-->
+    <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+        <li>
+        <a href="{% url 'ads:ad_create' %}">Add an Ad</a>
+        </li>
+        <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                Messages
+                {% if menu_unread_messages_count %}
+                    <span class="badge">{{ menu_unread_messages_count }}</span>
+                {% endif %}
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" style="min-width:360px; max-width:420px; font-size:85%; max-height:225px; overflow-y:auto; overflow-x:hidden;">
+                {% if menu_messages %}
+                    {% for menu_message in menu_messages %}
+                    <li>
+                        <a href="{% url 'ads:ad_detail' menu_message.ad.id %}#messages-panel"
+                           style="display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            {% if menu_message.is_read %}
+                            <i class="fa fa-check menu-read-icon" title="Read"></i>
+                            {% endif %}
+                            <strong>From:</strong> {{ menu_message.sender.username }}
+                            |
+                            <strong>Date:</strong> {{ menu_message.created_at }}
+                            |
+                            <strong>Ad:</strong>
+                            {{ menu_message.ad.title|slice:":100" }}{% if menu_message.ad.title|length > 100 %}...{% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li><a href="#" onclick="return false;">No messages yet.</a></li>
+                {% endif %}
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                <img style="width: 25px;" src="{{ user|gravatar:60 }}"/><b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <li style="white-space:nowrap; padding:8px 12px;">
+                <form method="post" action="{% url 'logout' %}" style="display:inline-block; margin:0;">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'ads:all' %}">
+                <button type="submit" class="btn btn-default btn-xs" style="padding:4px 8px; margin:0;"><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Logout</button>
+                </form>
+
+            <span class="menu-user-welcome">
+            Welcome <i class="fa fa-user"></i> <b>{{ user }}</b>
+            </span>
+            </li>
+            </ul>
+        </li>
+        {% else %}
+        <li>
+        <a href="{% url 'login' %}?next={% url 'ads:all' %}" ><i class="fa fa-spinner fa-spin fa-fw"></i> Login</a>
+        </li>
+        {% endif %}
+    </ul>
+    </div>
+  </div>
+</nav>
+
+{% endblock %}
