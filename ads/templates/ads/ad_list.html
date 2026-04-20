@@ -385,6 +385,7 @@ input[type=text]:focus {border-color:#009a90; outline:none;}
                 {% if request.GET.sort %}
                 <input type="hidden" name="sort" value="{{ request.GET.sort }}">
                 {% endif %}
+                <input type="hidden" name="per_page" value="{{ number_per_page|default:10 }}">
                 <div class="search-wrapper">
                     <i class="fa fa-search search-icon-left"></i>
                     <input type="text"
@@ -425,6 +426,7 @@ input[type=text]:focus {border-color:#009a90; outline:none;}
         {% if request.GET.search %}
         <input type="hidden" name="search" value="{{ request.GET.search }}">
         {% endif %}
+        <input type="hidden" name="per_page" value="{{ number_per_page|default:10 }}">
 
         <!-- CITY FILTER -->
         <div class="col-xs-6 col-sm-4" style="margin-bottom:10px;">
@@ -645,6 +647,7 @@ input[type=text]:focus {border-color:#009a90; outline:none;}
 <a href="{% url 'ads:all' %}">&nbsp;Return to all ads</a></p>
 {% endif %}
 
+{% if page_obj %}
 <nav aria-label="Page navigation">
   <ul class="pagination justify-content-center">
 
@@ -694,7 +697,23 @@ input[type=text]:focus {border-color:#009a90; outline:none;}
 
   </ul>
 </nav>
-<p style="text-align:center;margin-top:-15px;">{{ number_per_page }} ads per page</p>
+<div style="text-align:center;margin-top:-12px;margin-bottom:10px;">
+  <form method="get" style="display:inline-flex;align-items:center;gap:8px;">
+    {% for key, value in request.GET.items %}
+      {% if key != 'per_page' and key != 'page' %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endif %}
+    {% endfor %}
+    <label for="per-page-select" style="margin:0;">Ads per page</label>
+    <select id="per-page-select" name="per_page" class="form-control" style="width:auto;display:inline-block;" onchange="this.form.submit()">
+      {% for option in per_page_choices %}
+      <option value="{{ option }}" {% if option == number_per_page %}selected{% endif %}>{{ option }}</option>
+      {% endfor %}
+    </select>
+    <noscript><button type="submit" class="btn btn-default btn-sm">Apply</button></noscript>
+  </form>
+</div>
+{% endif %}
 
 <div class="notes accordion" style="background-color: var(--surface); color:#1a1a1a;">
 <details>
