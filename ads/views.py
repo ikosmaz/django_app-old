@@ -33,6 +33,9 @@ from django.views.decorators.http import require_POST
 from .forms import LoginForm, PriceFilterForm
 from django.contrib.auth.decorators import login_required
 
+PER_PAGE_CHOICES = (10, 20, 50)
+DEFAULT_PER_PAGE = 10
+
 # Create your views here.
 def _send_activation_email(request, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -90,6 +93,16 @@ def _get_safe_next_url(request, fallback_url):
     ):
         return next_url
     return fallback_url
+
+
+def _get_per_page_value(request):
+    try:
+        per_page = int(request.GET.get("per_page", DEFAULT_PER_PAGE))
+    except (TypeError, ValueError):
+        per_page = DEFAULT_PER_PAGE
+    if per_page not in PER_PAGE_CHOICES:
+        per_page = DEFAULT_PER_PAGE
+    return per_page
 
 
 def register_request(request):
@@ -461,8 +474,10 @@ class AdListView(OwnerListView):
         else:
             ads = ads.order_by("-updated_at")
 
-        # --- PAGINATOR 6 PER PAGE CAN BE CHANGED---
-        number_per_page = 6
+        # --- PAGINATION ---
+        per_page_choices = list(PER_PAGE_CHOICES)
+        number_per_page = _get_per_page_value(request)
+
         paginator = Paginator(ads, number_per_page)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
@@ -489,6 +504,7 @@ class AdListView(OwnerListView):
         total_ads = ads.count()
         pagination_query_params = request.GET.copy()
         pagination_query_params.pop("page", None)
+        pagination_query_params["per_page"] = str(number_per_page)
         pagination_query = pagination_query_params.urlencode()
 
 
@@ -505,6 +521,7 @@ class AdListView(OwnerListView):
             'number_of_ads':number_of_ads,
             'price_form': price_form,
             'number_per_page': number_per_page,
+            'per_page_choices': per_page_choices,
             'pagination_query': pagination_query,
         }
 
@@ -943,6 +960,10 @@ class FavoriteListView(LoginRequiredMixin, ListView):
     template_name = 'ads/ad_list.html'
     context_object_name = 'ad_list'
 
+    def get_paginate_by(self, queryset):
+        self.number_per_page = _get_per_page_value(self.request)
+        return self.number_per_page
+
     def get_queryset(self):
         return (
             Ad.objects
@@ -971,6 +992,12 @@ class FavoriteListView(LoginRequiredMixin, ListView):
 
         # search param placeholder (your template expects it)
         ctx['search'] = ""
+        ctx['number_per_page'] = getattr(self, 'number_per_page', DEFAULT_PER_PAGE)
+        ctx['per_page_choices'] = list(PER_PAGE_CHOICES)
+        pagination_query_params = self.request.GET.copy()
+        pagination_query_params.pop("page", None)
+        pagination_query_params["per_page"] = str(ctx['number_per_page'])
+        ctx['pagination_query'] = pagination_query_params.urlencode()
 
         for obj in ctx['ad_list']:
             obj.natural_updated = naturaltime(obj.updated_at)
@@ -982,6 +1009,10 @@ class MyAdListView(LoginRequiredMixin, ListView):
     model = Ad
     template_name = 'ads/ad_list.html'
     context_object_name = 'ad_list'
+
+    def get_paginate_by(self, queryset):
+        self.number_per_page = _get_per_page_value(self.request)
+        return self.number_per_page
 
     def get_queryset(self):
         return (
@@ -1002,9 +1033,18 @@ class MyAdListView(LoginRequiredMixin, ListView):
         ctx = super().get_context_data(**kwargs)
         rows = self.request.user.favorite_ads.values('id')
         ctx['favorites_count'] = len(rows)
-        ctx['my_ads_count'] = ctx['ad_list'].count() if hasattr(ctx['ad_list'], 'count') else len(ctx['ad_list'])
+        if ctx.get('page_obj') is not None:
+            ctx['my_ads_count'] = ctx['page_obj'].paginator.count
+        else:
+            ctx['my_ads_count'] = ctx['ad_list'].count() if hasattr(ctx['ad_list'], 'count') else len(ctx['ad_list'])
         ctx['favorites'] = [row['id'] for row in rows]
         ctx['search'] = ""
+        ctx['number_per_page'] = getattr(self, 'number_per_page', DEFAULT_PER_PAGE)
+        ctx['per_page_choices'] = list(PER_PAGE_CHOICES)
+        pagination_query_params = self.request.GET.copy()
+        pagination_query_params.pop("page", None)
+        pagination_query_params["per_page"] = str(ctx['number_per_page'])
+        ctx['pagination_query'] = pagination_query_params.urlencode()
 
         for obj in ctx['ad_list']:
             obj.natural_updated = naturaltime(obj.updated_at)
