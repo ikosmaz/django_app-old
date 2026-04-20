@@ -1,9 +1,8 @@
 {% extends "base_menu.html" %}
-
+{% load static %}
 {% block content %}
 <style>
-search {float:left; margin-left:250px;}
-hr {margin-top:-1px; margin-bottom:3px; border-top:1px solid #d9d9d9;}
+hr {margin-top:3px; margin-bottom:3px; border-top:1px solid #d9d9d9;}
 input[type=text] {color:#333333;
   width: 30%;
   min-width:250px;
@@ -13,188 +12,813 @@ input[type=text] {color:#333333;
   border: 2px solid #e5e5e5;
   border-radius: 5px;}
 input[type=text]:focus {border-color:#009a90; outline:none;}
-.notes {border:1px solid #d9d9d9; border-radius:5px; padding:10px; background-color:#ffffff; color:#777777; margin-bottom:10px;}
-.notes details > summary {cursor:pointer; color:#006d66; font-weight:600; margin-bottom:10px;}
+.notes {border:1px solid #d9d9d9; border-radius:5px; padding:20px; background-color:#ffffff; color:#777777; margin:-20px;margin-top:0;}
+.notes details > summary {cursor:pointer; color:#006d66; font-weight:600; margin-bottom:10px;min-height:40px;}
 .notes p {margin:0 0 8px 0;}
 .notes-list {margin:0 0 8px 18px; padding:0;}
 .notes-list li {margin-bottom:4px;}
 .fa {padding-top:0.2rem; color:#009a90;}
-.fa-search {font-size:1.6rem; color:#009a90;}
-.fa-close {font-size:2rem;margin-left:5px;color:#009a90;}
-.fa-close:hover {font-size:2.2rem;margin-left:5px;color:#006d66;}
-.fa-heart, .fa-heart-o {margin-top:-3px;}
-.search button[type="submit"] {border:none; background:transparent; padding:0 6px; box-shadow:none;}
+.fa-search {font-size:1.5rem; color:#009a90;}
+.fa-heart, .fa-heart-o {margin-top:0;}
 .ads-list {list-style:none; padding-left:0; margin:0;}
-.adlist {margin:0 0 8px 0; padding:10px; border:1px solid #d9d9d9; border-radius:5px; background-color:#ffffff; box-shadow:0 2px 5px rgba(0,0,0,0.08);}
-.ad-row {display:grid; grid-template-columns:55px 1fr; gap:12px; align-items:start;}
-.ad-thumb {width:55px; height:55px; object-fit:cover; border:1px solid #e5e5e5; border-radius:4px; display:block;}
-.ad-thumb-placeholder {width:55px; height:55px; border:1px solid #e5e5e5; border-radius:4px; background-color:#f2f2f2;}
-.ad-content {flex:1; min-width:0;}
+.adlist {margin:0 0 8px 0; padding:5px; border:1px solid #d9d9d9; border-radius:5px; background-color:#ffffff; box-shadow:0 2px 5px rgba(0,0,0,0.08);}
+.ad-row {display:grid; grid-template-columns:150px minmax(0, 1fr); gap:12px; align-items:stretch; min-height:150px;}
+.ad-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+    border-radius: 0;
+    display: block;
+    background: #f2f2f2;
+}
+.ad-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    background-color: #f2f2f2;
+}
+.ad-content {display:grid; grid-template-rows:auto auto auto auto; gap:7px; min-width:0; padding:8px 8px 8px 0;}
 .ad-title-row {display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
 .ad-title-left {min-width:0;}
-.ad-title-right {flex:0 0 auto; line-height:1;}
-.ad-desc {margin-top:6px;}
-.ad-meta {color:#777777; margin-top:4px; display:block;}
+.ad-title-left a {font-weight:600; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+/*.ad-title-right {flex:0 0 auto; line-height:1;}*/
+.price-text {margin-left: auto; font-size:1.2rem; white-space:nowrap; font-weight:600;}
+
+.ad-desc {margin:0; color:#2f2f2f;}
+.ad-meta {color:#777777; margin:0; display:block;}
+.pagination {margin-top: 10px; display: flex; justify-content:center; font-size: 1.5rem;gap: 2px;}
+.pagination .page-item.active .page-link {
+    background-color: #08ced1 !important;
+    border-color: #08ced1 !important;
+    color: white !important;
+}
+.pagination .page-item.active .page-link {font-size: 1.5rem; font-weight: bold;}
+.btn {margin-right:5px;}
+.btn-group {margin-top:-12px;margin-bottom:-15px;}
+.btn-default:hover {background-color:#dbdbdb !important;}
+.link-num {border-radius:10px !important;}
+.poster-info {display: flex; justify-content: space-between; align-items: center; width: 100%;}
+.edit-icons a {margin-left: 2px; font-size: 100%;}
+
+.search-wrapper {position: relative; width: 100%;}
+.search-wrapper input[type="text"] {width: 100%;padding-left: 35px; height: 35px; border: 2px solid #e5e5e5;border-radius: 5px;}
+.search-wrapper input[type="text"]:focus {border-color: #009a90;outline: none;}
+.search-icon-left {position: absolute; left: 10px; bottom:-5px;top: 50%;transform: translateY(-50%);color: #009a90; font-size: 18px;pointer-events: none;}
+.search-box input[type="text"] {height: 35px; margin-top:0;}
+.ad-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 12px; /* spacing between rows */
+    padding: 0;
+    min-height: 100px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ad-card:hover {background:#f6fff5;}
+
+.ad-stars {margin-top: 2px; font-size: 13px;}
+/*.price-box {white-space: nowrap;}
+.price-box .form-control {display: inline-block;width:102px;}*/
+
+.price-box {
+  display: flex;
+  gap: 6px;
+}
+
+.price-box .form-control {
+  width: 100%;
+  min-width: 102px;
+}
+
+.price-text {display:inline-block;}
+
+.ads-list .col-xs-12 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.ads-list .col-sm-12,
+.ads-list .col-md-6 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Left area star block */
+.ad-left {
+    width: 150px;
+    position: relative;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px 0 0 4px;
+    overflow: hidden;
+    background: #f2f2f2;
+    display: block;
+}
+
+.ad-image-link {
+    display: block;
+    height: 150px;
+    width: 100%;
+}
+
+.ad-fav-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+
+.ad-fav-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.68);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.ad-fav-btn:hover,
+.ad-fav-btn:focus,
+.ad-fav-btn:active {
+    text-decoration: none;
+}
+
+.ad-fav-btn .fa {
+    color: #fff;
+    padding-top: 0;
+    font-size: 1.15rem;
+}
+
+.ad-fav-btn:hover {
+    background: rgba(0, 0, 0, 0.82);
+}
+
+.rate-stars-overlay {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Default empty star */
+.rate-stars .star {
+    font-size: 12px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+/* When hovered */
+.rate-stars .star:hover,
+.rate-stars .star.hovered {
+    color: #f5c518;
+}
+
+/* When selected (after click) */
+.rate-stars .star.active {
+    color: #f5c518;
+}
+
+/* Rating stars (logged‑in) */
+.rate-stars {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.72);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.rate-stars i {
+    color: #f5c518;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 0;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* Gray border stars for rating */
+.rate-stars .empty-star {
+    color: #ccc;
+}
+
+/* Average rating row */
+.avg-rating {
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 3px;
+    margin: 0;
+}
+.avg-rating i {
+    color: #f5c518;
+    margin-left: 0;
+    font-size: 13px;
+}
+
+.ad-stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.ad-counters {
+    color: #000000;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .ad-row {
+        grid-template-columns: 130px minmax(0, 1fr);
+        min-height: 130px;
+    }
+    .ad-left {
+        width: 130px;
+    }
+    .ad-image-link {
+        height: 130px;
+    }
+    .ad-thumb {
+        height: 100%;
+    }
+}
+
+
+#apply-filter {
+    background-color: #ccf3dc;
+    border-color: #ccf3dc;
+    border-width: 2px;
+    background-image: none !important;
+    text-shadow: none;
+    color: #151414;
+    letter-spacing: 0.2px;
+}
+
+#apply-filter:hover,
+#apply-filter:focus,
+#apply-filter:active {
+    background-color: #0083d1 !important;
+    border-color: #0083d1 !important;
+    background-image: none !important;
+    text-shadow: none;
+    color: #ffffff !important;
+}
+
+#filterArea {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition:
+        max-height 0.45s ease,
+        opacity 0.40s ease,
+        transform 0.40s ease;
+}
+
+#filterArea.open {
+    max-height: 1500px; /* large enough to show the whole content */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.search-wrapper input[type="text"],
+#filterToggle {
+    height: 40px;              /* same height */
+    line-height: 40px;         /* vertically center text */
+    border-radius: 5px;        /* match search input */
+}
+
+#filterToggle {
+    padding: 0 15px;           /* consistent horizontal padding */
+    font-size: 14px;
+}
+#filterToggle {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    height: 38px;
+    border-radius: 5px;
+    transition: background 0.2s ease;
+}
+
+#filterToggle:hover {
+    background: #d6d4d4;
+}
+
+#filterToggle:active,
+#filterToggle:focus {
+    background: #f0f0f0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+@media (min-width: 1022px) {
+    .ads-list {
+        margin-left: -2.5px;
+        margin-right: -2.5px;
+    }
+
+    .ads-list > .col-md-6 {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+}
+
+.filter-btn {
+    width: 100%;
+    font-size: 1.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centers Filters */
+}
+
+.filter-center {
+    pointer-events: none; /* optional: prevents text selection */
+}
+
+.filter-found {
+    position: absolute;
+    right: 10px;
+    font-size: 1.3rem;
+    color: #c93a0d;
+    white-space: nowrap;
+}
+
 </style>
 
-<h1>Ads</h1>
+<h2>Ads</h2>
 
-<div class="search">
-<!-- https://www.w3schools.com/howto/howto_css_search_button.asp -->
-<form>
-  <input type="text" placeholder="Search in ads..." name="search"
-  {% if search %} value="{{ search }}" {% endif %}>
+<div class="row" style="margin-bottom:15px;">
 
-  <button type="submit"><i class="fa fa-search"></i></button>
-<a href="{% url 'ads:all' %}"><i class="fa fa-close"></i></a>
-</form>
-</div>
 
-{% if user.is_authenticated %}
-<div class="btn-group" role="group" style="margin-bottom:10px;">
+<!-- Row 1: Search + Filter Button -->
+    <div class="row" style="margin-bottom:15px;margin-left:0;margin-right:0;">
 
-    <a class="btn btn-primary {% if request.resolver_match.url_name == 'all' %}active{% endif %}"
-       href="{% url 'ads:all' %}" style="margin-right:8px;">
-        All Ads
-    </a>
+    <!-- SEARCH -->
+    <div class="col-xs-12 col-sm-6">
+        <div class="search-box">
+            <form>
+                {% if request.GET.city %}
+                <input type="hidden" name="city" value="{{ request.GET.city }}">
+                {% endif %}
+                {% if request.GET.category %}
+                <input type="hidden" name="category" value="{{ request.GET.category }}">
+                {% endif %}
+                {% if request.GET.min_price %}
+                <input type="hidden" name="min_price" value="{{ request.GET.min_price }}">
+                {% endif %}
+                {% if request.GET.max_price %}
+                <input type="hidden" name="max_price" value="{{ request.GET.max_price }}">
+                {% endif %}
+                {% if request.GET.sort %}
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                {% endif %}
+                <div class="search-wrapper">
+                    <i class="fa fa-search search-icon-left"></i>
+                    <input type="text"
+                           placeholder="Search in ads..."
+                           name="search"
+                           {% if search %} value="{{ search }}"{% endif %}>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <a class="btn btn-default {% if request.resolver_match.url_name == 'favorites' %}active{% endif %}"
-    href="{% url 'ads:favorites' %}">
-     <i class="fa fa-heart"></i>
-     My Favorites
-     {% if favorites_count %}
-         <span class="badge">{{ favorites_count }}</span>
-     {% endif %}
-    </a>
+    <!-- FILTER BUTTON -->
+    <div class="col-xs-12 col-sm-6">
+    <button id="filterToggle"
+            type="button"
+            class="btn btn-default filter-btn">
+        <span class="filter-center">
+           <strong><i class="fa fas fa-filter"></i>  Filters </strong>
+        </span>
 
-    <a class="btn btn-default {% if request.resolver_match.url_name == 'my_ads' %}active{% endif %}"
-    href="{% url 'ads:my_ads' %}" style="margin-left:8px;">
-     My Ads
-     {% if my_ads_count %}
-         <span class="badge">{{ my_ads_count }}</span>
-     {% endif %}
-    </a>
-</div>
-{% endif %}
+        {% if total_ads is not None and total_ads != number_of_ads %}
+        <span class="filter-found">
+            <em><b>{{ total_ads }} found</b></em>
+        </span>
+        {% endif %}
+    </button>
+    </div>
 
-{% if ad_list %}
-<ul class="ads-list">
-  {% for ad in ad_list %}
-    <li class="adlist">
-        <div class="ad-row">
-            <a href="{% url 'ads:ad_detail' ad.id %}">
-                {% if ad.content_type %}
-                <img class="ad-thumb" src="{% url 'ads:ad_picture' ad.id %}" alt="">
-                {% else %}
-                <div class="ad-thumb-placeholder"></div>
+
+    </div>  <!-- END OF FIRST ROW -->
+
+
+    <div class="row" style="margin:0;">
+    <div class="col-xs-12">
+        <div id="filterArea" style="margin-top:5px;">
+
+        <form method="get" class="row">
+        {% if request.GET.search %}
+        <input type="hidden" name="search" value="{{ request.GET.search }}">
+        {% endif %}
+
+        <!-- CITY FILTER -->
+        <div class="col-xs-6 col-sm-4" style="margin-bottom:10px;">
+            <select name="city" class="form-control">
+                <option value="">City (All)</option>
+                {% for c in cities %}
+                <option value="{{ c }}" {% if request.GET.city == c %}selected{% endif %}>
+                    {{ c }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- CATEGORY FILTER -->
+        <div class="col-xs-6 col-sm-4" style="margin-bottom:10px;">
+            <select name="category" class="form-control">
+                <option value="">Category (All)</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- PRICE FILTER -->
+        <div class="col-xs-6 col-sm-4" style="margin-bottom:10px;">
+            <div class="price-box">
+                {{ price_form.min_price }}
+                {{ price_form.max_price }}
+            </div>
+        </div>
+
+        <!-- SORTING -->
+        <div class="col-xs-6 col-sm-4" style="margin-bottom:10px;">
+            <select name="sort" class="form-control">
+                <option value="">Sort by</option>
+                <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}><i class="fas fa-star"></i>★ Rating</option>
+                <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}><i class="fas fa-bell"></i> 🆕 Newest</option>
+                <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}><i class="fas fa-sort-amount-down"></i> 🔽 Price high to low</option>
+                <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}><i class="fas fa-sort-amount-up-alt"></i> 🔼 Price low to high</option>
+            </select>
+        </div>
+
+        <!-- APPLY FILTERS -->
+        <div class="col-xs-12 col-sm-4" style="margin-bottom:10px;">
+            <button class="btn btn-primary" id="apply-filter" type="submit" style="width:100%;"><b>Apply Filters</b></button>
+        </div>
+
+        <!-- RESET -->
+        <div class="col-xs-12 col-sm-4" style="margin-bottom:10px;">
+            <a href="{% url 'ads:all' %}" class="btn btn-default" style="width:100%;margin-bottom:15px"><b>Reset</b></a>
+        </div>
+
+        </form>
+
+        </div>
+    </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <!-- Button Group -->
+    <div class="col-xs-12 col-sm-12 col-md-12" style="margin-bottom:10px;">
+        <div class="btn-group btn-group-justified" style="width:100%;">
+
+            <a class="btn btn-default {% if request.resolver_match.url_name == 'all' %}active{% endif %}"
+               href="{% url 'ads:all' %}">
+                <b>All Ads</b>
+            </a>
+
+            <a class="btn btn-default {% if request.resolver_match.url_name == 'favorites' %}active{% endif %}"
+               href="{% url 'ads:favorites' %}">
+                <i class="fa fa-heart"></i> Favs
+                {% if favorites_count %}
+                    <span class="badge">{{ favorites_count }}</span>
                 {% endif %}
             </a>
 
-            <div class="ad-content">
-                <div class="ad-title-row">
-                    <div class="ad-title-left">
-                        <a href="{% url 'ads:ad_detail'  ad.id %}">{{ ad.title }}</a>
-                        {% if ad.owner_id == user.id %}
-                        (<a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
-                        <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>)
-                        {% endif %}
-                    </div>
-                    {% if user.is_authenticated %}
-                    <div class="ad-title-right">
-                        <!-- Two hrefs with two stacked icons each - one showing and one hidden -->
-                        <a href="#" onclick=
-                            "adPost('{% url 'ads:ad_unfavorite' ad.id %}', {{ ad.id }} );return false;"
-                            {% if ad.id not in favorites %} style="display: none;" {% endif %}
-                            id="favorite_star_{{ad.id}}">
-                        <span class="fa-stack" style="vertical-align:middle;">
-                        <i class="fas fa-heart fa-stack-1x" style="color:#009a90"></i>
-                        <i class="fas fa-heart-o fa-stack-1x"></i>
-                        </span>
-                        </a>
-                        <!-- the second href -->
-                        <a href="#" onclick=
-                             "adPost('{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }} );return false;"
-                            {% if ad.id in favorites %} style="display: none;" {% endif %}
-                            id="unfavorite_star_{{ad.id}}">
-                        <span class="fa-stack" style="vertical-align: middle;">
-                        <i class="fa fa-heart fa-stack-1x" style="display: none; color:#009a90;"></i>
-                        <i class="fa fa-heart-o fa-stack-1x"></i>
-                        </span>
-                        </a>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <hr>
-                <div class="ad-desc">
-                    {% if ad.text|length < 50 %}
-                        {{ ad.text }}
-                    {% else %}
-                        {{ ad.text|slice:"0:49" }}
-                        <a href="{% url 'ads:ad_detail'  ad.id %}">...</a>
-                    {% endif %}
-                </div>
-                <small class="ad-meta">
-                {% if ad.owner.username %}
-                    posted by [ {{ ad.owner.username }} ]
+            <a class="btn btn-default {% if request.resolver_match.url_name == 'my_ads' %}active{% endif %}"
+               href="{% url 'ads:my_ads' %}">
+                My Ads
+                {% if my_ads_count %}
+                    <span class="badge">{{ my_ads_count }}</span>
                 {% endif %}
-                {{ ad.natural_updated }}
-                </small>
-            </div>
+            </a>
+
+            <a class="btn btn-default"
+               href="{% url 'ads:ad_create' %}">
+                <i class="fas fa-plus"></i> Add new
+            </a>
+
         </div>
-    </li>
-  {% endfor %}
-</ul>
-{% else %}
-  <p><i class="fa fa-circle-o fa-lg" aria-hidden="true"></i>  No ads found for your search term. Try using different keywords.</p>
-{% endif %}
-</p>
-
-<p style="font-size:2rem; margin:20px 0;">
-{% if user.is_authenticated %}
-<div class="btn-group" role="group" aria-label="...">
-    <a class="btn btn-primary" href="{% url 'ads:ad_create' %}">
-        Add an ad
-    </a>
+    </div>
+    {% endif %}
 </div>
-{% endif %}
-</p>
 
-<div class="notes" style="background-color: var(--surface);">
+{% if ad_list %}
+<div class="row ads-list">
+  {% for ad in ad_list %}
+    <div class="col-xs-12 col-sm-12 col-md-6 custom-row-padding">
+
+      <div class="ad-card">
+        <div class="ad-card-inner">   <!-- ✅ required wrapper -->
+
+          <div class="ad-row">
+
+            <div class="ad-left">
+              <a href="{% url 'ads:ad_detail' ad.id %}" class="ad-image-link">
+                {% if ad.thumbnail %}
+                  <img class="ad-thumb" src="{{ ad.thumbnail.url }}" alt="">
+                {% else %}
+                  <img class="ad-thumb" src="{% static 'no_image.png' %}" alt="">
+                {% endif %}
+              </a>
+
+                {% if user.is_authenticated %}
+                <div class="ad-fav-overlay">
+                    <a href="#" title="Unlike"
+                        onclick="adPost('{% url 'ads:ad_unfavorite' ad.id %}', {{ ad.id }} );return false;"
+                        {% if ad.id not in favorites %} style="display: none;" {% endif %}
+                        id="favorite_star_{{ad.id}}" class="ad-fav-btn">
+                        <i class="fa fa-heart"></i>
+                    </a>
+                    <a href="#" title="Like"
+                        onclick="adPost('{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }} );return false;"
+                        {% if ad.id in favorites %} style="display: none;" {% endif %}
+                        id="unfavorite_star_{{ad.id}}" class="ad-fav-btn">
+                        <i class="fa fa-heart-o"></i>
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if user.is_authenticated and user != ad.owner %}
+                <div class="rate-stars-overlay">
+                  <div class="rate-stars" data-ad="{{ ad.id }}">
+                      {% for i in "12345" %}
+                      <i class="fa {% if ad.user_rating and forloop.counter <= ad.user_rating %}fa-star active{% else %}fa-star-o{% endif %} star"
+                          data-value="{{ forloop.counter }}"
+                          data-ad="{{ ad.id }}">
+                      </i>
+                      {% endfor %}
+                  </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <div class="ad-content">
+              <div class="ad-title-row">
+                <div class="ad-title-left">
+                  {% if ad.price < 1000 %}
+                  {% if ad.title|length < 25 %}
+                  <a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title|capfirst }}</a>
+                  {% else %}
+                  <a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title|slice:"0:24"|capfirst }}...</a>
+                  {% endif %}
+                  {% else %}
+                  {% if ad.title|length < 21 %}
+                  <a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title|capfirst }}</a>
+                  {% else %}
+                  <a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title|slice:"0:20"|capfirst }}...</a>
+                  {% endif %}
+                  {% endif %}
+
+                </div>
+                <span class="price-text">{{ ad.price }} NOK</span>
+              </div>
+
+              <div class="ad-desc">
+                {% if ad.text|length < 40 %}
+                  {{ ad.text|capfirst }}
+                {% else %}
+                  {{ ad.text|slice:"0:35"|capfirst }} ...
+
+                {% endif %}
+              </div>
+
+              <p class="poster-info">
+                <small class="ad-meta">
+                    {% if ad.owner.username %}
+                        posted by
+                        {% if ad.owner_id == user.id %} <b>You</b> <i class="fas fa-user-edit"></i> {% else %} [{{ ad.owner.username }}] {% endif %}
+                         {{ ad.natural_updated }}
+                    {% endif %}
+                </small>
+              </p>
+
+              <div class="ad-stats-row">
+                <div class="avg-rating" id="avg-stars-{{ ad.id }}">
+                        {% if ad.total_ratings_db %}
+                        <i class="fa fa-star" style="color:#f5c518; margin-bottom:2px;"></i>
+                        {{ ad.average_rating_db|floatformat:1 }} ({{ ad.total_ratings_db }} {% if ad.total_ratings_db < 2 %} rating{% else %} ratings{% endif %})
+                        {% else %}
+                        (No rating yet)
+                        {% endif %}
+                </div>
+                <div class="ad-counters">
+                    <small class="ad-like-count" id="like-count-{{ad.id}}">
+                        {{ ad.like_count }}
+                    </small>
+                    <small class="ad-like-count">{% if ad.like_count %} <i class="fas fa-heart" style="color:#009a90;"></i> {% else %} <i class="far fa-heart" style="color:#009a90;"></i> {% endif %}</small>
+                    <small class="ad-like-count">
+                        | {{ad.all_comments_count}} {% if ad.all_comments_count %} <i class="fas fa-comments" style="color:#009a90;"></i> {% else %} <i class="far fa-comments" style="color:#009a90;"></i> {% endif %}
+                    </small>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div> <!-- end ad-card-inner -->
+      </div> <!-- end ad-card -->
+
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+<p><i class="fas fa-exclamation text-danger"></i>&nbsp;&nbsp;No ads found.
+<a href="{% url 'ads:all' %}">&nbsp;Return to all ads</a></p>
+{% endif %}
+
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+
+    {# Previous button #}
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.previous_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">
+          « Previous
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">« Previous</span>
+      </li>
+    {% endif %}
+
+    {# Page numbers #}
+    {% for num in page_obj.paginator.page_range %}
+      {% if num == page_obj.number %}
+        <li class="page-item active">
+          <span class="page-link link-num">{{ num }}</span>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link link-num"
+             href="?page={{ num }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">
+            {{ num }}
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    {# Next button #}
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.next_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">
+          Next »
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Next »</span>
+      </li>
+    {% endif %}
+
+  </ul>
+</nav>
+<p style="text-align:center;margin-top:-15px;">{{ number_per_page }} ads per page</p>
+
+<div class="notes accordion" style="background-color: var(--surface); color:#1a1a1a;">
 <details>
-  <summary><i class="fa fa-arrow-down"></i>   Notes for this web site   <i class="fa fa-arrow-down"></i></summary>
-  <p>This webapp is a project made for Coursera Django for Everybody, and added some other features after the course.</p>
+  <summary><i class="fa fa-arrow-down"></i>   Notes for the web site   <i class="fa fa-arrow-down"></i></summary>
+  <p>This webapp is a project made for Coursera Django for Everybody, and added some other features after the course. </p>
+  <p>Tags: Python, Django, Bootstrap, css, js, fontawsome, avatar, search, filter</p>
   <p>Logged in users can:</p>
   <ul class="notes-list">
-    <li>add an ad</li>
-    <li>comment on ads</li>
-    <li>send encrypted message to the ad owner</li>
-    <li>use emojis on ad title, comments and messages</li>
-    <li>like ads and comments</li>
-    <li>edit/delete own ads and delete own comments</li>
-    <li>send a reset password link</li>
+    <li>add an ad.</li>
+    <li>comment on ads.</li>
+    <li>send encrypted in-app messages to the ad owner.</li>
+    <li>use emojis on ad title, comments and messages.</li>
+    <li>use photo as avatar, default gavatar.</li>
+    <li>like ads and comments.</li>
+    <li>rate others ads.</li>
+    <li>edit/delete own ads and delete own comments.</li>
+    <li>send email to get reset password link.</li>
   </ul>
-  <p>Github account can be used to login (social login)</p>
-  <p>Up to 3MB photos can be added to ads</p>
-  <p>Search function works through all ad titles and ad details</p>
+  <p>Admin can manage users and ads on admin panel.</p>
+  <p>Github account can be used to login (social login).</p>
+  <p>Email activation is required to use the app.</p>
+  <p>Email confirmation is required to delete the account.</p>
+  <p>Photos (5 max) can be added to ads, no size limit but they are saved as compressed to max 1MB in the app.</p>
+  <p>Search function works through all ad titles and ad details.</p>
+  <p>Filter feature added.</p>
+  <p>The app is responsive and works on all devices.</p>
   <hr>
-  <p>To test the site, you can create an account, login with github account or login with guest login info below</p>
+  <p>To test the site, you can create an account, login with github or login with guest login info below:</p>
   <p>username: Guest <br>password: Test.the_app</p>
   <hr>
-  <p>Please send feedback to <a href="mailto:isakosmaz@gmail.com">isakosmaz@gmail.com</a></p>
+  <p>If interested please send email to <a href="mailto:isakosmaz@gmail.com">isakosmaz@gmail.com</a></p>
+  <br>
+  <p>© 2026 All rights reserved.</p>
 </details>
 </div>
 
 <script>
-function adPost(url, ad_id) {
-    console.log('Requesting JSON');
-    $.post(url, {},  function(rowz){
-        console.log(url, 'finished');
-        $("#unfavorite_star_"+ad_id).toggle();
-        $("#favorite_star_"+ad_id).toggle();
-    }).fail(function(xhr) {
-        alert('Url failed with '+xhr.status+' '+url);
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    function paintListStars(adId, value) {
+        document.querySelectorAll('.rate-stars[data-ad="' + adId + '"] .star')
+            .forEach(s => {
+                const isFilled = parseInt(s.dataset.value) <= value;
+                s.classList.toggle("active", isFilled);
+                s.classList.toggle("fa-star", isFilled);
+                s.classList.toggle("fa-star-o", !isFilled);
+            });
+    }
+
+    document.querySelectorAll(".rate-stars").forEach(group => {
+        const selected = group.querySelectorAll(".star.active").length;
+        group.dataset.selected = selected;
+        paintListStars(group.dataset.ad, selected);
     });
+
+    document.querySelectorAll(".rate-stars .star").forEach(star => {
+        star.addEventListener("mouseover", function () {
+            const value = parseInt(this.dataset.value);
+            const adId = this.dataset.ad;
+            paintListStars(adId, value);
+        });
+
+        star.addEventListener("mouseout", function () {
+            const adId = this.dataset.ad;
+            const group = document.querySelector('.rate-stars[data-ad="' + adId + '"]');
+            const selected = parseInt((group && group.dataset.selected) || "0");
+            paintListStars(adId, selected);
+        });
+
+        star.addEventListener("click", function () {
+            const value = parseInt(this.dataset.value);
+            const adId = this.dataset.ad;
+            const group = document.querySelector('.rate-stars[data-ad="' + adId + '"]');
+            if (group) group.dataset.selected = value;
+            paintListStars(adId, value);
+            rateAd(adId, value);
+        });
+    });
+
+});
+
+document.getElementById("filterToggle").addEventListener("click", function () {
+    var area = document.getElementById("filterArea");
+    area.classList.toggle("open");
+});
+
+
+function adPost(url, ad_id) {
+    fetch(url, { method: "POST", credentials: "same-origin" })
+        .then(response => response.json())
+        .then(data => {
+            // ✅ Toggle icons (like/unlike)
+            document.getElementById("favorite_star_" + ad_id).style.display =
+                document.getElementById("favorite_star_" + ad_id).style.display === "none"
+                ? "inline-flex"
+                : "none";
+
+            document.getElementById("unfavorite_star_" + ad_id).style.display =
+                document.getElementById("unfavorite_star_" + ad_id).style.display === "none"
+                ? "inline-flex"
+                : "none";
+
+            // ✅ Update like count if you want
+            const countEl = document.getElementById("like-count-" + ad_id);
+            if (countEl) {
+                countEl.innerHTML = `
+                    ${data.like_count}
+                `;
+            }
+        })
+        .catch(err => console.log("Error:", err));
+}
+
+
+function rateAd(ad_id, stars) {
+    fetch(`/ad/${ad_id}/rate/${stars}/`)
+        .then(response => response.json())
+        .then(data => {
+            // update average rating on page
+            document.getElementById("avg-stars-" + ad_id).innerHTML =
+    `<i class="fa fa-star" style="color:#f5c518"></i>
+     ${data.average.toFixed(1)} (${data.total} ratings)`;
+        });
 }
 </script>
 <script src="https://kit.fontawesome.com/cb18de710e.js" crossorigin="anonymous"></script>

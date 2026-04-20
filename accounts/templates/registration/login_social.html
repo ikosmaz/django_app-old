@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'login-neu/style.css' %}">
     <style>
         .neu-input input::placeholder {
-            color: #9499b7 !important;
+            color: #8e8e8e !important;
             opacity: 1;
         }
     </style>
@@ -30,9 +30,11 @@
                 <p>Please sign in to continue</p>
             </div>
 
-            {% if form.errors %}
+            {% if form.non_field_errors %}
             <div class="error-message show" style="margin-bottom:14px;display:block;">
-                Your username and password didn't match. Please try again.
+                {% for err in form.non_field_errors %}
+                    {{ err }}
+                {% endfor %}
             </div>
             {% endif %}
 
@@ -40,7 +42,8 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <div class="input-group neu-input">
-                        <input type="text" id="username" name="username" required autocomplete="username" placeholder="Username" value="{{ form.username.value|default:'' }}">
+                        <input type="text" id="username" name="username" required autocomplete="username" placeholder="Username or email" value="{{ form.username.value|default:'' }}">
+                        <!--<label for="username">Username</label> -->
                         <div class="input-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -54,6 +57,7 @@
                 <div class="form-group">
                     <div class="input-group neu-input password-group">
                         <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Password">
+                        <!--<label for="password">Password</label> -->
                         <div class="input-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -76,7 +80,7 @@
 
                 <div class="form-options">
                     <div class="remember-wrapper">
-                        <input type="checkbox" id="remember" name="remember">
+                        <input type="checkbox" id="remember" name="remember_me">
                         <label for="remember" class="checkbox-label">
                             <div class="neu-checkbox">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -114,11 +118,22 @@
             </div>
             {% endif %}
 
-            <div class="signup-link">
-                <p>Don't have an account? <a href="{% url 'ads:register' %}">Sign up</a></p>
+            <!--<div class="signup-link">
+                <p>Don't have an account? <a href="{% url 'ads:register' %}">Register here</a></p>
                 <br>
                 <p>Use website without login <a href="{% url 'ads:all'%}">Home</a></p>
+            </div>-->
+
+            <div class="signup-row">
+                <div class="signup-card clickable" onclick="window.location='{% url 'ads:register' %}'">
+                    <p>Don't have an account? <b>Register here </b></p>
+                </div>
+
+                <div class="signup-card clickable" onclick="window.location='{% url 'ads:all' %}'">
+                    <p>Use website without login <b>Home page</b></p>
+                </div>
             </div>
+
         </div>
     </div>
 
