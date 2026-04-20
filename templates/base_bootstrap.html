@@ -5,9 +5,8 @@
 
 <title>{% block title %}{{ settings.APP_NAME }}{% endblock %}</title>
 
-<meta name="dj4e" content="70b0fe89ee50140bd6580640a4d70e7e">
-
-<meta name="dj4e-code" content="42162706489578">
+<!-- <meta name="dj4e" content="70b0fe89ee50140bd6580640a4d70e7e">
+<meta name="dj4e-code" content="42162706489578"> -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="stylesheet"
@@ -46,6 +45,7 @@
 
 body {
     padding-top: 50px;
+    padding-left:0;
     background-color: var(--bg-main);
     color: var(--text-main);
 }
@@ -90,32 +90,17 @@ a:focus {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
-.panel {
-    border-color: var(--border-soft);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-}
 
-.panel-default > .panel-heading {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border-soft);
-}
-
-.btn-primary {
-    background-color: var(--accent);
-    border-color: var(--accent);
-}
 
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary.active {
-    background-color: var(--accent-dark);
     border-color: var(--accent-dark);
 }
 
 .btn-default:hover,
 .btn-default:focus,
 .btn-default.active {
-    background-color: var(--surface-soft);
     border-color: var(--border-soft);
 }
 
