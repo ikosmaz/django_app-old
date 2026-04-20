@@ -6,6 +6,7 @@
     box-sizing: border-box;
 }
 
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: #e0e5ec;
@@ -23,10 +24,10 @@ body {
 }
 
 .login-card {
-    background: #e0e5ec;
+    background: #ccf3dc;/*#e0e5ec;*/
     border-radius: 30px;
-    padding: 50px 40px;
-    box-shadow: 
+    padding: 30px 40px;
+    box-shadow:
         20px 20px 60px #bec3cf,
         -20px -20px 60px #ffffff;
     position: relative;
@@ -34,7 +35,7 @@ body {
 }
 
 .login-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(1px);
 }
 
 .login-header {
@@ -46,12 +47,12 @@ body {
     width: 80px;
     height: 80px;
     margin: 0 auto 24px;
-    background: #e0e5ec;
+    background: #ccf3dc; /*#e0e5ec;*/
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 
+    box-shadow:
         8px 8px 20px #bec3cf,
         -8px -8px 20px #ffffff,
         inset 0 0 0 #bec3cf,
@@ -60,7 +61,7 @@ body {
 }
 
 .neu-icon:hover {
-    box-shadow: 
+    box-shadow:
         4px 4px 10px #bec3cf,
         -4px -4px 10px #ffffff,
         inset 4px 4px 10px #bec3cf,
@@ -96,22 +97,22 @@ body {
 
 /* Neumorphic Input Styles */
 .form-group {
-    margin-bottom: 28px;
+    margin-bottom: 5px;
     position: relative;
 }
 
 .neu-input {
     position: relative;
-    background: #e0e5ec;
+    background: #ccf3dc; /*#e0e5ec;*/
     border-radius: 15px;
-    box-shadow: 
+    box-shadow:
         inset 8px 8px 16px #bec3cf,
         inset -8px -8px 16px #ffffff;
     transition: all 0.3s ease;
 }
 
 .neu-input:focus-within {
-    box-shadow: 
+    box-shadow:
         inset 4px 4px 8px #bec3cf,
         inset -4px -4px 8px #ffffff;
 }
@@ -123,7 +124,7 @@ body {
     padding: 20px 24px;
     padding-left: 55px;
     color: #3d4468;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     outline: none;
     transition: all 0.3s ease;
@@ -139,7 +140,7 @@ body {
     top: 50%;
     transform: translateY(-50%);
     color: #9499b7;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
     pointer-events: none;
     transition: all 0.3s ease;
@@ -183,7 +184,7 @@ body {
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    background: #e0e5ec;
+    background: #ccf3dc;/*#e0e5ec;*/
     border: none;
     width: 35px;
     height: 35px;
@@ -193,18 +194,18 @@ body {
     align-items: center;
     justify-content: center;
     color: #9499b7;
-    box-shadow: 
+    box-shadow:
         4px 4px 10px #bec3cf,
         -4px -4px 10px #ffffff;
     transition: all 0.3s ease;
 }
 
 .neu-toggle:hover {
-    color: #6c7293;
+    color: #747575; /*#6c7293;*/
 }
 
 .neu-toggle:active {
-    box-shadow: 
+    box-shadow:
         inset 2px 2px 5px #bec3cf,
         inset -2px -2px 5px #ffffff;
 }
@@ -232,8 +233,9 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 35px;
-    flex-wrap: wrap;
-    gap: 16px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    gap: 4px;
 }
 
 .remember-wrapper {
@@ -249,7 +251,7 @@ body {
 .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 6px;
     cursor: pointer;
     user-select: none;
     color: #6c7293;
@@ -260,12 +262,12 @@ body {
 .neu-checkbox {
     width: 22px;
     height: 22px;
-    background: #e0e5ec;
+    background: #ccf3dc; /*#e0e5ec;*/
     border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 
+    box-shadow:
         3px 3px 8px #bec3cf,
         -3px -3px 8px #ffffff;
     transition: all 0.3s ease;
@@ -274,7 +276,7 @@ body {
 }
 
 .remember-wrapper input[type="checkbox"]:checked + .checkbox-label .neu-checkbox {
-    box-shadow: 
+    box-shadow:
         inset 2px 2px 5px #bec3cf,
         inset -2px -2px 5px #ffffff;
 }
@@ -298,6 +300,7 @@ body {
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
+    white-space: nowrap;
     transition: color 0.3s ease;
 }
 
@@ -308,7 +311,7 @@ body {
 /* Neumorphic Button */
 .neu-button {
     width: 100%;
-    background: #e0e5ec;
+    background: #ccf3dc; /*#e0e5ec;*/
     border: none;
     border-radius: 15px;
     padding: 18px 32px;
@@ -318,7 +321,7 @@ body {
     cursor: pointer;
     position: relative;
     margin-bottom: 30px;
-    box-shadow: 
+    box-shadow:
         8px 8px 20px #bec3cf,
         -8px -8px 20px #ffffff;
     transition: all 0.3s ease;
@@ -338,7 +341,7 @@ body {
 
 .neu-button:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
         12px 12px 30px #bec3cf,
         -12px -12px 30px #ffffff;
 }
@@ -349,7 +352,7 @@ body {
 
 .neu-button:active {
     transform: translateY(0);
-    box-shadow: 
+    box-shadow:
         inset 4px 4px 10px #bec3cf,
         inset -4px -4px 10px #ffffff;
 }
@@ -395,8 +398,8 @@ body {
 .divider {
     display: flex;
     align-items: center;
-    margin: 30px 0;
-    gap: 16px;
+    margin: 10px 0;
+    gap: 5px;
 }
 
 .divider-line {
@@ -406,7 +409,7 @@ body {
 }
 
 .divider span {
-    color: #9499b7;
+    color: #767b94; /* #9499b7;*/
     font-size: 13px;
     font-weight: 500;
     text-transform: uppercase;
@@ -418,13 +421,13 @@ body {
     display: flex;
     justify-content: center;
     gap: 16px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .neu-social {
     width: 50px;
     height: 50px;
-    background: #e0e5ec;
+    background: #ccf3dc; /*#e0e5ec;*/
     border: none;
     border-radius: 15px;
     cursor: pointer;
@@ -432,7 +435,7 @@ body {
     align-items: center;
     justify-content: center;
     color: #6c7293;
-    box-shadow: 
+    box-shadow:
         6px 6px 15px #bec3cf,
         -6px -6px 15px #ffffff;
     transition: all 0.3s ease;
@@ -440,14 +443,14 @@ body {
 
 .neu-social:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
         8px 8px 20px #bec3cf,
         -8px -8px 20px #ffffff;
 }
 
 .neu-social:active {
     transform: translateY(0);
-    box-shadow: 
+    box-shadow:
         inset 3px 3px 8px #bec3cf,
         inset -3px -3px 8px #ffffff;
 }
@@ -496,7 +499,7 @@ body {
 }
 
 .form-group.error .neu-input {
-    box-shadow: 
+    box-shadow:
         inset 8px 8px 16px #ffb8c4,
         inset -8px -8px 16px #ffffff,
         0 0 0 2px #ff3b5c;
@@ -540,28 +543,75 @@ body {
     body {
         padding: 16px;
     }
-    
+
     .login-card {
         padding: 35px 25px;
         border-radius: 20px;
     }
-    
+
     .login-header h2 {
         font-size: 1.75rem;
     }
-    
+
     .neu-input input {
         padding: 18px 20px;
         padding-left: 50px;
     }
-    
+
     .neu-input label {
         left: 50px;
     }
-    
+
     .form-options {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
         gap: 16px;
     }
+}
+
+.signup-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.signup-card {
+    background: #ccf3dc; /*#e0e5ec;*/
+    padding: 10px 10px;
+    border-radius: 15px;
+    box-shadow:
+        6px 6px 15px #bec3cf,
+        -6px -6px 15px #ffffff;
+    text-align: center;
+    min-width: 180px;
+    transition: all 0.3s ease;
+}
+
+.signup-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        10px 10px 25px #bec3cf,
+        -10px -10px 25px #ffffff;
+}
+
+.signup-card p {
+    margin: 0;
+    color: #3d4468;
+    font-size: 14px;
+}
+
+.signup-card a {
+    color: #6c7293;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.signup-card a:hover {
+    color: #3d4468;
+}
+
+
+.clickable {
+    cursor: pointer;
 }

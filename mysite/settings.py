@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Used for a default title
 APP_NAME = 'Ads App'   # Add
@@ -22,12 +23,23 @@ APP_NAME = 'Ads App'   # Add
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g$iqqu&*mw4_sg3(#ld0sqaalxebel&168^yj%i&sgrw(fmn@w'
+SECRET_KEY = 'Some secret key here !!! DO NOT USE THIS IN PRODUCTION'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Local default is DEBUG on; set DJANGO_DEBUG=0 in production.
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1' #this is for local development
+# DEBUG = False #this is for production or pythonanywhere
+ALLOWED_HOSTS = [
+    host.strip() for host in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS',
+        '127.0.0.1,localhost,ikosmaz.pythonanywhere.com'
+    ).split(',') if host.strip()
+]
 
-ALLOWED_HOSTS = ['*']
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Application definition
 
@@ -49,8 +61,12 @@ INSTALLED_APPS = [
 
 # When we get to crispy forms :)
 CRISPY_TEMPLATE_PACK = 'bootstrap3'  # Add
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap3"
+CRISPY_ALLOWED_TEMPLATE_PACKS = ["bootstrap3"]
 
+#Session expiry period
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 2592000  # 30 days (default)
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24  # 24 hours
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -95,7 +111,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 USE_PYTHONANYWHERE_DB = os.environ.get('DJANGO_USE_PYTHONANYWHERE_DB', '0') == '1'
 
-if USE_PYTHONANYWHERE_DB:
+if USE_PYTHONANYWHERE_DB: #should be customized for production
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -144,7 +160,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'CET'
 
 USE_I18N = True
 
@@ -160,10 +176,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
+    'ads.auth_backends.EmailOrUsernameBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -186,8 +202,8 @@ LOGIN_URL = '/accounts/login'
 # Email (for password reset and notifications)
 # Local default: console backend. Override with environment variables for SMTP.
 EMAIL_BACKEND = os.environ.get(
-    'DJANGO_EMAIL_BACKEND',
-    'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
+	'DJANGO_EMAIL_BACKEND',
+	'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
 )
 EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('DJANGO_EMAIL_PORT', '587'))
@@ -203,7 +219,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # https://coderwall.com/p/uzhyca/quickly-setup-sql-query-logging-django
 # https://stackoverflow.com/questions/12027545/determine-if-django-is-running-under-the-development-server
 
-''' # Leave off for now '''
+
 import sys
 if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
     print('Running locally')
